@@ -1,5 +1,5 @@
 // Comment your name below so that we all know that we can commit.
-// Christopher Herras-Antig
+// Christopher Herras-Antig -- Addition to tutorial
 // Name 2
 // Name 3
 // Name 4
