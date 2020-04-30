@@ -67,5 +67,14 @@ public class EventLogArchive {
 		return output;
 	}
 	
+	public String getProcessSummary() {
+		String output = "Process Events:\n";
+		for (ProcessLog i : processList) {
+			output += (i.getCustomer().getName() + " was processed at " + i.getStartTime() +" and finished processing at " + i.getEndTime() + ". This took " + i.getProcessDuration() + " minutes.");
+		}
+		output += ("Total customers jockied: " + jockeyList.size());
+		return output;
+	}
+	
 	
 }

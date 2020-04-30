@@ -150,7 +150,7 @@ public class Driver {
 		if (numServers == 1) {
 			if ((server1.getSize() > balkThreshold) && (rng.nextInt(2) == 1)) { // Balk calculation
 				// Log balk
-				System.out.println("Customer " + inputStr + " has balked with " + inputVal + " items.");
+				System.out.println("Customer " + inputStr + " has balked with " + inputVal + " items.\n");
 				
 				// Add to log list. WIP
 			}
@@ -160,6 +160,7 @@ public class Driver {
 					totalTime += giveRandomTimeLong(); // Simulating the fact that time passes between batches of customers
 				}
 				server1.enqueue(new Customer(inputStr, Integer.parseInt(inputVal), totalTime));
+				System.out.println(inputStr + " got in line for checkout at " + totalTime + " with " + inputVal + " items.\n");
 			}
 		}
 		else {
@@ -173,15 +174,22 @@ public class Driver {
 			temp = server1.dequeue();
 			
 			// Jockey Conditional
-			if (server2.getSize() == 0 && server1.getSize() != 0) {
+			if (numServers == 2 && server2.getSize() == 0 && server1.getSize() != 0) {
 				// Jockey if server2 has noone in line and there's other people in your line.
 				server2.enqueue(temp);
 				
 				events.addJockeyEvent(temp, totalTime); // Assuming jockeying is near instant
 			}
 			else {
+				// Time calculation
 				// TimeToComeUpToCheckout + TimeToScan + TimeToPay = ProcessTime
+				float startTime = totalTime;
+				totalTime += (giveRandomTimeShort() + ((giveRandomTimeShort()/2) * temp.getItems()) + giveRandomTimeLong());
+				float endTime = totalTime;
 				
+				// Log event
+				System.out.println(temp.getName() + " began checking-out at " + startTime + " and finished checking-out at " + endTime + ". | This took " + (endTime-startTime) +" minutes.\n");
+				events.addProcessEvent(1, temp, startTime, endTime);
 			}
 			
 		}

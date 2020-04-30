@@ -12,4 +12,24 @@ public class ProcessLog {
 		this.endTime = endTime;
 		this.processDuration = (endTime - startTime);
 	}
+	
+	public Customer getCustomer() {
+		return customerID;
+	}
+	
+	public float getStartTime() {
+		return startTime;
+	}
+	
+	public float getEndTime() {
+		return endTime;
+	}
+	
+	public float getProcessDuration() {
+		return processDuration;
+	}
+	
+	public float getTotalTimeInSystem() {
+		return (endTime - customerID.getTime());
+	}
 }
