@@ -11,24 +11,28 @@ public class Customer {
 
 	private String name;
 	private int numItems;
+	private float timeEntered;
 	
-	public Customer() {
+	public Customer(float timeEntered) {
 		// Init
 		name = "John Doe";
 		numItems = 0;
+		this.timeEntered = timeEntered;
 	}
 	
-	public Customer (String name) {
+	public Customer (String name, float timeEntered) {
 	
 		// Init
 		name = "John Doe";
 		numItems = 0;
+		this.timeEntered = timeEntered;
 	}
 	
-	public Customer (String name, int numItems) {
+	public Customer (String name, int numItems, float timeEntered) {
 		// Init
 		this.numItems = numItems;
 		this.name = name;
+		this.timeEntered = timeEntered;
 	}	
 	
 	// stub code
