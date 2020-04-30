@@ -15,8 +15,8 @@ public class PseudoRNG {
         randomList = generateRNList();
     }
 
-    public PseudoRNG(int num) {
-        randomList = generateRNList(num);
+    public PseudoRNG(int starting) {
+        randomList = generateRNList(starting);
     }
     
     private ArrayList<Float> generateRNList(){
@@ -47,26 +47,26 @@ public class PseudoRNG {
     }
 
 
-    private ArrayList<Float> generateRNList(int num){
+    private ArrayList<Float> generateRNList(int starting){
         ArrayList<Float> returnList = new ArrayList<Float>();
-        int startingNum = 3768;
+        int startingNum = starting;
 
-        for(int i = 0; i < num; i++){
+        for(int i = 0; i < 100; i++){
             int toSplit = startingNum * startingNum;
             ArrayList<Integer> digits = new ArrayList<Integer>(8);
-            for(int j = 7; j >= 0; j++){
+            for(int j = 0; j < 8; j++){
                 
                 if (toSplit > 0){
-                    digits.add(j, toSplit % 10);
+                    digits.add(0, toSplit % 10);
                     toSplit /= 10;
                 }
                 else{
-                    digits.add(j, 0);
+                    digits.add(0, 0);
                 }
             }
             String newNum = digits.get(2).toString() + digits.get(3).toString() + digits.get(4).toString() + digits.get(5).toString();
             startingNum = Integer.parseInt(newNum);
-            float toAdd = startingNum / 10000;
+            float toAdd = (float)startingNum / 10000;
             System.out.println(toAdd);
             returnList.add(toAdd);
         }
