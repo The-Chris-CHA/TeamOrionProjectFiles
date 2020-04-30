@@ -67,13 +67,13 @@ public class Driver {
 				break;
 				
 			case "2":
-				if (server2.getSize() == 0 && server1.getSize() != 0) 
+				if (server2.getSize() == 0 && server1.getSize() != 0) // Only people in Aisle 1
 					processSingleCustomer(1);
 				else
-					if (server1.getSize() == 0 && server2.getSize() != 0)
+					if (server1.getSize() == 0 && server2.getSize() != 0) // Only people in Aisle 2
 						processSingleCustomer(2);
 					else
-						if (server1.getSize() != 0 && server2.getSize() != 0)
+						if (server1.getSize() != 0 && server2.getSize() != 0) // People in both Aisles
 							processTwoCustomers();
 						else
 							System.out.println("There is no one lined up for checkout.\n");
@@ -81,6 +81,7 @@ public class Driver {
 				
 			case "3":
 				// Code for opening second server
+				openServer2();
 				break;
 				
 			case "4":
@@ -212,8 +213,7 @@ public class Driver {
 			if ((server1.getSize() > balkThreshold) && (rng.nextInt(2) == 1)) { // Balk calculation
 				// Log balk
 				System.out.println("Customer " + inputStr + " has balked with " + inputVal + " items.\n");
-				
-				// Add to log list. WIP
+				events.addBalkEvent(new Customer(inputStr, Integer.parseInt(inputVal), totalTime), totalTime);
 			}
 			else {
 				// Customer enters queue despite being greater than threshold. 50/50 chance.
@@ -221,13 +221,41 @@ public class Driver {
 					totalTime += giveRandomTimeLong(); // Simulating the fact that time passes between batches of customers
 				}
 				server1.enqueue(new Customer(inputStr, Integer.parseInt(inputVal), totalTime));
-				System.out.println(inputStr + " got in line for checkout at " + totalTime + " with " + inputVal + " items.\n");
+				System.out.println(inputStr + " got in line 1 for checkout at " + totalTime + " with " + inputVal + " items.\n");
 			}
 		}
+		
+		// If there are two servers
 		else {
-			// When 2 servers we need to check some things.
+			if (server1.getSize() <= server2.getSize()) { // Add to server 1 if line size is <= line 2
+				if ((server1.getSize() > balkThreshold) && (rng.nextInt(2) == 1)) { // Balk calculation
+					// Log balk
+					System.out.println("Customer " + inputStr + " has balked with " + inputVal + " items.\n");
+					events.addBalkEvent(new Customer(inputStr, Integer.parseInt(inputVal), totalTime), totalTime);
+				}
+				else {
+					// Customer enters queue despite being greater than threshold. 50/50 chance.
+					if (server1.getSize() == 0) {
+						totalTime += giveRandomTimeLong(); // Simulating the fact that time passes between batches of customers
+					}
+					server1.enqueue(new Customer(inputStr, Integer.parseInt(inputVal), totalTime));
+					System.out.println(inputStr + " got in line 1 for checkout at " + totalTime + " with " + inputVal + " items.\n");
+				}
+			} // End Server 1 Conditional
+			else { // Add to server 2
+				if ((server2.getSize() > balkThreshold) && (rng.nextInt(2) == 1)) { // Balk calculation
+					// Log balk
+					System.out.println("Customer " + inputStr + " has balked with " + inputVal + " items.\n");
+					events.addBalkEvent(new Customer(inputStr, Integer.parseInt(inputVal), totalTime), totalTime);
+				}
+				else {
+					// Customer enters queue despite being greater than threshold. 50/50 chance.
+					server2.enqueue(new Customer(inputStr, Integer.parseInt(inputVal), totalTime));
+					System.out.println(inputStr + " got in line 2 for checkout at " + totalTime + " with " + inputVal + " items.\n");
+				}
+			} // End Server 2 Conditional
 		}
-	}
+	} // End createCustomer
 	
 	public static void processSingleCustomer(int server) {
 		Customer temp;
@@ -308,10 +336,11 @@ public class Driver {
 	
 	public static void openServer2() {
 		if (numServers == 2) {
-			System.out.println("Second server is already opened!");
+			System.out.println("Second aisle is already opened!");
 		}
 		else {
 			numServers += 1; // SHOULD equal 2. 
+			System.out.println("Aisle 2 has been opened!");
 		}
 	}
 	
