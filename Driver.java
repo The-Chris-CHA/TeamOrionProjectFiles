@@ -14,7 +14,7 @@ public class Driver {
 	static BufferedReader input = new BufferedReader (new InputStreamReader(System.in));
 	
 	static int numServers, balkThreshold;
-	static float projRenegeChance, totalTime;
+	static float renegeChance, totalTime, renegeThreshold;
 	static String inputStr, inputVal;
 	
 	static Server server1 = new Server();
@@ -30,7 +30,9 @@ public class Driver {
 		boolean exitLoop = false;
 		totalTime = 0.0f; // This will be one of the most important vars
 		numServers = 1;
-		projRenegeChance = 0.75f; // Static chance for testing.
+		
+		renegeChance = 0.75f; // Static chance for testing.
+		renegeThreshold = 5.0f;
 		balkThreshold = 5; // Static chance for testing.
 		
 		// Bootup Message
@@ -65,7 +67,16 @@ public class Driver {
 				break;
 				
 			case "2":
-				processSingleCustomer();
+				if (server2.getSize() == 0 && server1.getSize() != 0) 
+					processSingleCustomer(1);
+				else
+					if (server1.getSize() == 0 && server2.getSize() != 0)
+						processSingleCustomer(2);
+					else
+						if (server1.getSize() != 0 && server2.getSize() != 0)
+							processTwoCustomers();
+						else
+							System.out.println("There is no one lined up for checkout.\n");
 				break;
 				
 			case "3":
@@ -138,6 +149,56 @@ public class Driver {
 		return (rng.nextFloat());
 	}
 	
+	public static void checkRenege(int server) {
+		int size = 0;
+		Customer temp;
+		
+		// Check server 1 line
+		if (server == 1) {
+			size = server1.getSize();
+			
+			for(int i = 0; i < size; i++)
+			{
+				temp = server1.dequeue();
+				
+				if ((totalTime - temp.getTime()) > renegeThreshold) { // Renege check if time in queue is beyond threshold
+					if (giveRandomChance() > renegeChance) { // Balk if RNG above renege chance
+						// Log Renege
+						events.addRenegeEvent(temp, totalTime);
+						System.out.println(temp.getName() + " reneged at " + totalTime + " | They were in line for " + (totalTime - temp.getTime()) + " minutes.");
+					}
+					else 
+						server1.enqueue(temp);
+				}
+				else {
+					server1.enqueue(temp);
+				} // End Master Conditional
+			} // End For Loop
+		} // End Server 1 Check
+		
+		// Check server 2 line
+		if (server == 2) {
+			size = server2.getSize();
+	
+			for(int i = 0; i < size; i++)
+			{
+				temp = server2.dequeue();
+				
+				if ((totalTime - temp.getTime()) > renegeThreshold) { // Renege check if time in queue is beyond threshold
+					if (giveRandomChance() > renegeChance) { // Balk if RNG above renege chance
+						// Log Renege
+						events.addRenegeEvent(temp, totalTime);
+						System.out.println(temp.getName() + " reneged at " + totalTime + " | They were in line for " + (totalTime - temp.getTime()) + " minutes.");
+					}
+					else 
+						server2.enqueue(temp);
+				}
+				else {
+					server2.enqueue(temp);
+				} // End Master Conditional
+			} // End For Loop
+		} // End Server 2 Check
+	} // End Renege Method
 	
 	// Main Methods
 	public static void createCustomer() throws IOException {
@@ -168,34 +229,81 @@ public class Driver {
 		}
 	}
 	
-	public static void processSingleCustomer() {
+	public static void processSingleCustomer(int server) {
 		Customer temp;
-		if (server1.peek() != null) {
-			temp = server1.dequeue();
-			
-			// Jockey Conditional
-			if (numServers == 2 && server2.getSize() == 0 && server1.getSize() != 0) {
-				// Jockey if server2 has noone in line and there's other people in your line.
-				server2.enqueue(temp);
+		if (server == 1) {
+			if (server1.peek() != null) {
+				temp = server1.dequeue();
 				
-				events.addJockeyEvent(temp, totalTime); // Assuming jockeying is near instant
+				// Jockey Conditional
+				if (numServers == 2 && server2.getSize() == 0 && server1.getSize() != 0) {
+					// Jockey if server2 has noone in line and there's other people in your line.
+					server2.enqueue(temp);
+					
+					// Log Jockey
+					events.addJockeyEvent(temp, totalTime); // Assuming jockey is near instant
+					System.out.println(temp.getName() + "jockeyed over to server 1 at " + totalTime);
+				}
+				else {
+					// Time calculation
+					// TimeToComeUpToCheckout + TimeToScan + TimeToPay = ProcessTime
+					float startTime = totalTime;
+					totalTime += (giveRandomTimeShort() + ((giveRandomTimeShort()/2) * temp.getItems()) + giveRandomTimeLong());
+					float endTime = totalTime;
+					
+					// Log event
+					System.out.println("Aisle 1: " + temp.getName() + " began checking-out at " + startTime + " and finished checking-out at " + endTime + ". | This took " + (endTime-startTime) +" minutes.\n");
+					events.addProcessEvent(1, temp, startTime, endTime);
+					
+					checkRenege(1);
+				}
+				
 			}
 			else {
-				// Time calculation
-				// TimeToComeUpToCheckout + TimeToScan + TimeToPay = ProcessTime
-				float startTime = totalTime;
-				totalTime += (giveRandomTimeShort() + ((giveRandomTimeShort()/2) * temp.getItems()) + giveRandomTimeLong());
-				float endTime = totalTime;
-				
-				// Log event
-				System.out.println(temp.getName() + " began checking-out at " + startTime + " and finished checking-out at " + endTime + ". | This took " + (endTime-startTime) +" minutes.\n");
-				events.addProcessEvent(1, temp, startTime, endTime);
+				System.out.println("The queue is empty. No customers to process.\n"
+						+ "If you're reading this, this is an error.");
 			}
-			
 		}
-		else {
-			System.out.println("The queue is empty. No customers to process.\n");
+		
+		if (server == 2) {
+			if (server2.peek() != null) {
+				temp = server2.dequeue();
+				
+				// Jockey Conditional
+				if (numServers == 2 && server1.getSize() == 0 && server2.getSize() != 0) {
+					// Jockey if server2 has noone in line and there's other people in your line.
+					server1.enqueue(temp);
+					
+					// Log Jockey
+					events.addJockeyEvent(temp, totalTime); // Assuming jockey is near instant
+					System.out.println(temp.getName() + "jockeyed over to server 1 at " + totalTime);
+				}
+				else {
+					// Time calculation
+					// TimeToComeUpToCheckout + TimeToScan + TimeToPay = ProcessTime
+					float startTime = totalTime;
+					totalTime += (giveRandomTimeShort() + ((giveRandomTimeShort()/2) * temp.getItems()) + giveRandomTimeLong());
+					float endTime = totalTime;
+					
+					// Log event
+					System.out.println("Aisle 2: " + temp.getName() + " began checking-out at " + startTime + " and finished checking-out at " + endTime + ". | This took " + (endTime-startTime) +" minutes.\n");
+					events.addProcessEvent(1, temp, startTime, endTime);
+					
+					checkRenege(2);
+				}
+				
+			}
+			else {
+				System.out.println("The queue is empty. No customers to process.\n"
+						+ "If you're reading this, this is an error.");
+			}
 		}
+	}
+	
+	public static void processTwoCustomers() {
+		Customer temp1, temp2;
+		
+		
 	}
 	
 	public static void openServer2() {
