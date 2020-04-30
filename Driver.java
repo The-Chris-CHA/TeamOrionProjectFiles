@@ -11,14 +11,21 @@ import java.util.Random;
 public class Driver {
 	
 	static BufferedReader input = new BufferedReader (new InputStreamReader(System.in));
+	static int numServers, balkThreshold;
 	static float projRenegeChance;
 	static String inputStr, inputVal;
 	static Random rng = new Random();
-
+	
+	static Server server1 = new Server();
+	static Server server2 = new Server();
+	
 	public static void main(String[] args) throws IOException {
 		// Init vars
 		boolean exitLoop = false;
-		projRenegeChance = giveRandomChance();
+		numServers = 1;
+		projRenegeChance = 0.75f; // Static chance for testing.
+		balkThreshold = 5; // Static chance for testing.
+		//projRenegeChance = giveRandomChance();
 		
 		// Debug
 		//System.out.println(rng.nextInt(2));
@@ -118,4 +125,25 @@ public class Driver {
 		return (rng.nextInt(6) + rng.nextFloat());
 	}
 	
+	public void createCustomer() throws IOException {
+		System.out.print("Customer Name: ");
+		inputStr = input.readLine();
+		
+		System.out.print("Number of Items: ");
+		inputVal = input.readLine();
+		
+		if (numServers == 1) {
+			if ((server1.getSize() > balkThreshold) && (rng.nextInt(2) == 1)) { // Balk calculation
+				// Log balk
+				
+			}
+			else {
+				// Customer enters queue despite being greater than threshold. 50/50 chance.
+				server1.enqueue(new Customer(inputStr, Integer.parseInt(inputVal)));
+			}
+		}
+		else {
+			// When 2 servers we need to check some things.
+		}
+	}
 }
