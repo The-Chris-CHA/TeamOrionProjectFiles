@@ -11,18 +11,17 @@ import java.util.Random;
 public class Driver {
 	
 	static BufferedReader input = new BufferedReader (new InputStreamReader(System.in));
-	static float projBalkChance, projRenegeChance, projJockeyChance;
+	static float projRenegeChance;
 	static String inputStr, inputVal;
 	static Random rng = new Random();
 
 	public static void main(String[] args) throws IOException {
 		// Init vars
 		boolean exitLoop = false;
-		projBalkChance = giveRandomChance();
 		projRenegeChance = giveRandomChance();
-		projJockeyChance = giveRandomChance();
 		
 		// Debug
+		//System.out.println(rng.nextInt(2));
 		//System.out.println(projBalkChance);
 		//System.out.println(projRenegeChance);
 		//System.out.println(projJockeyChance);
