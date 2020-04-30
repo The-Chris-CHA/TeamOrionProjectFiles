@@ -52,8 +52,4 @@ public class Customer {
 	public int getItems () {
 		return this.numItems;
 	}
-	
-	public float getTime() {
-		return timeEntered;
-	}
 }
