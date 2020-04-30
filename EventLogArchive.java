@@ -14,12 +14,14 @@ public class EventLogArchive {
 	ArrayList<EventLog> balkList;
 	ArrayList<EventLog> renegeList;
 	ArrayList<EventLog> jockeyList;
+	ArrayList<ProcessLog> processList;
 	
 	public EventLogArchive() {
 		// Init all Lists
 		balkList = new ArrayList<EventLog>();
 		renegeList = new ArrayList<EventLog>();
 		jockeyList = new ArrayList<EventLog>();
+		processList = new ArrayList<ProcessLog>();
 	}
 	
 	public void addBalkEvent(Customer input, float timeOfBalk) {
@@ -32,6 +34,10 @@ public class EventLogArchive {
 	
 	public void addJockeyEvent(Customer input, float timeOfJockey) {
 		jockeyList.add(new EventLog(input, timeOfJockey));
+	}
+	
+	public void addProcessEvent(int server, Customer input, float startTime, float endTime) {
+		processList.add(new ProcessLog(server, input, startTime, endTime));
 	}
 	
 	public String getBalkSummary() {
@@ -60,4 +66,6 @@ public class EventLogArchive {
 		output += ("Total customers jockied: " + jockeyList.size());
 		return output;
 	}
+	
+	
 }
