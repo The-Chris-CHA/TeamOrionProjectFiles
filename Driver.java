@@ -1,20 +1,31 @@
 /* Driver.java
  * Description: Driver class for ISSM project.
  * Status: Incomplete
- * Version: 2020.4.27-1
+ * Version: 2020.4.30-1
  * Authors: Christopher Herras-Antig, Dylan Ott, Name 3, Name 4
  */
 
 import java.io.*;
+import java.util.Random;
 
 public class Driver {
 	
 	static BufferedReader input = new BufferedReader (new InputStreamReader(System.in));
+	static float projBalkChance, projRenegeChance, projJockeyChance;
 	static String inputStr, inputVal;
+	static Random rng = new Random();
 
 	public static void main(String[] args) throws IOException {
 		// Init vars
 		boolean exitLoop = false;
+		projBalkChance = giveRandomChance();
+		projRenegeChance = giveRandomChance();
+		projJockeyChance = giveRandomChance();
+		
+		// Debug
+		//System.out.println(projBalkChance);
+		//System.out.println(projRenegeChance);
+		//System.out.println(projJockeyChance);
 		
 		// Bootup Message
 		System.out.println("Welcome to the SSM Queue and Server System!"
@@ -99,4 +110,13 @@ public class Driver {
 		System.exit(0);
 	}
 
+
+	public static float giveRandomChance() {
+		return (rng.nextFloat());
+	}
+	
+	public float giveRandomTime() {
+		return (rng.nextInt(6) + rng.nextFloat());
+	}
+	
 }
