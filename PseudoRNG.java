@@ -1,3 +1,10 @@
+/* PseudoRNG.java
+ * Description: PRN Generator for ISSM project.
+ * Status: Needs testing
+ * Version: 2020.4.30-1
+ * Authors: Christopher Herras-Antig, Dylan Ott, Kevin Bullock, Name 4
+ */
+
 import java.util.ArrayList;
 
 public class PseudoRNG {
