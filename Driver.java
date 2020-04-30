@@ -2,7 +2,7 @@
  * Description: Driver class for ISSM project.
  * Status: Incomplete
  * Version: 2020.4.30-3
- * Authors: Christopher Herras-Antig, Dylan Ott, Name 3, Name 4
+ * Authors: Christopher Herras-Antig, Dylan Ott, Kevin Bullock, Name 4
  */
 
 import java.io.*;
