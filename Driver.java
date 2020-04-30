@@ -171,11 +171,19 @@ public class Driver {
 		Customer temp;
 		if (server1.peek() != null) {
 			temp = server1.dequeue();
+			
+			// Jockey Conditional
 			if (server2.getSize() == 0 && server1.getSize() != 0) {
 				// Jockey if server2 has noone in line and there's other people in your line.
 				server2.enqueue(temp);
 				
+				events.addJockeyEvent(temp, totalTime); // Assuming jockeying is near instant
 			}
+			else {
+				// TimeToComeUpToCheckout + TimeToScan + TimeToPay = ProcessTime
+				
+			}
+			
 		}
 		else {
 			System.out.println("The queue is empty. No customers to process.\n");
