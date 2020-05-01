@@ -5,7 +5,7 @@
  * Authors: Christopher Herras-Antig, Dylan Ott
  */
 
-import java.util.*;
+//import java.util.*; -- Unnecessary import
 
 public class Customer {
 

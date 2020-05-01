@@ -23,6 +23,7 @@ public class Driver {
 	static EventLogArchive events = new EventLogArchive();
 	
 	static Random rng = new Random(); // To Be Removed
+	static PseudoRNG prng = new PseudoRNG(1500);
 	
 	// Begin Subprograms
 	public static void main(String[] args) throws IOException {
@@ -96,14 +97,17 @@ public class Driver {
 				
 			case "5":
 				// Code for finding q-hat
+				System.out.println("The q-hat of this server model is : " + getQHat());
 				break;
 				
 			case "6": 
 				// Code for finding u-hat
+				System.out.println("The u-hat of this server model is : " + getUHat());
 				break;
 				
 			case "7":
 				// Code for finding b(t)
+				System.out.println("The B(t) for this server model is : " + getBT());
 				break;
 				
 			case "8":
@@ -141,19 +145,19 @@ public class Driver {
 	// Utility Functions
 	public static float giveRandomChance() {
 		// To be replaced with in-house code.
-		return (rng.nextFloat());
+		return (prng.nextFloat());
 	}
 	
 	public static float giveRandomTimeLong() {
 		// Should output something between 1.0 - 2.5.
 		// To be replaced with in-house code.
-		return (rng.nextInt(2) + rng.nextFloat());
+		return (rng.nextInt(2) + prng.nextFloat());
 	}
 	
 	public static float giveRandomTimeShort() {
 		// Should output something between 0.0 - 1.0
 		// To be replaced with in-house code.
-		return (rng.nextFloat());
+		return (prng.nextFloat());
 	}
 	
 	public static void checkRenege(int server) {
@@ -208,6 +212,7 @@ public class Driver {
 	} // End Renege Method
 	
 	// Main Methods
+	// Case 1
 	public static void createCustomer() throws IOException {
 		System.out.print("Customer Name: ");
 		inputStr = input.readLine();
@@ -263,6 +268,7 @@ public class Driver {
 		}
 	} // End createCustomer
 	
+	// Case 2
 	public static void processSingleCustomer(int server) {
 		Customer temp;
 		if (server == 1) {
@@ -334,6 +340,7 @@ public class Driver {
 		}
 	}
 	
+	// Case 2
 	public static void processTwoCustomers() {
 		Customer temp1, temp2;
 		float server1Start, server1End, server2Start, server2End;
@@ -391,6 +398,7 @@ public class Driver {
 		checkRenege(2);
 	}
 	
+	// Case 3
 	public static void openServer2() {
 		if (numServers == 2) {
 			System.out.println("Second aisle is already opened!\n");
@@ -401,6 +409,7 @@ public class Driver {
 		}
 	}
 	
+	// Case 4
 	public static void closeServer2() {
 		if (numServers == 2) {
 			numServers -= 1; // Should close one server and go back to one.
@@ -428,14 +437,39 @@ public class Driver {
 		}
 	}
 	
+	// Case 5
+	public static float getQHat() {
+		
+		
+		return 0.0f;
+	}
+	
+	// Case 6
+	public static float getUHat() {
+		
+		
+		return 0.0f;
+	}
+	
+	// Case 7
+	public static float getBT() {
+		
+		
+		return 0.0f;
+	}
+	
+	
+	// Case 8
 	public static void balkReport() {
 		System.out.println(events.getBalkSummary());
 	}
 	
+	// Case 9
 	public static void renegeReport() {
 		System.out.println(events.getRenegeSummary());
 	}
 	
+	// Case 10
 	public static void jockeyReport() {
 		System.out.println(events.getJockeySummary());
 	}
