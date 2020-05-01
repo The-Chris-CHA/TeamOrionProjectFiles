@@ -31,4 +31,5 @@ public class Server {
 	public int getSize() {
 		return server.size();
 	}
+	
 }

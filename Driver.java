@@ -90,6 +90,7 @@ public class Driver {
 				
 			case "4":
 				// Code for closing second server
+				closeServer2();
 				break;
 				
 			case "5":
@@ -403,11 +404,26 @@ public class Driver {
 		if (numServers == 2) {
 			numServers -= 1; // Should close one server and go back to one.
 			
+			System.out.println("Aisle 2 is closing. Customers are being shifted to aisle 1.");
+			Customer temp;
 			// Code for dequeueing entire server and entering them into new server.
 			// CHECK FOR BALK
+			while(server2.peek() != null) {
+				temp = server2.dequeue();
+				if ((server1.getSize() > balkThreshold) && (rng.nextInt(2) == 1)) {
+					// Balk
+					System.out.println("Customer " + temp.getName() + " has balked with " + temp.getItems() + " items at " + totalTime);
+					events.addBalkEvent(temp, totalTime);
+				}
+				else {
+					// Enqueue into Line 1
+					server1.enqueue(temp);
+					System.out.println(temp.getName() + " moved to line 1 for checkout at " + totalTime + " with " + temp.getItems() + " items.\n");
+				}
+			}
 		}
 		else {
-			System.out.println("Second server is already closed!");
+			System.out.println("Second server is already closed!\n");
 		}
 	}
 }
