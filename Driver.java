@@ -107,17 +107,17 @@ public class Driver {
 				
 			case "8":
 				// Code for reporting on balking
-				System.out.println(events.getBalkSummary());
+				balkReport();
 				break;
 				
 			case "9":
 				// Code for reporting on Reneging
-				System.out.println(events.getRenegeSummary());
+				renegeReport();
 				break;
 				
 			case "10":
 				// Code for reporting on jockeying
-				System.out.println(events.getJockeySummary());
+				jockeyReport();
 				break;
 				
 			case "11":
@@ -425,5 +425,17 @@ public class Driver {
 		else {
 			System.out.println("Second server is already closed!\n");
 		}
+	}
+	
+	public static void balkReport() {
+		System.out.println(events.getBalkSummary());
+	}
+	
+	public static void renegeReport() {
+		System.out.println(events.getRenegeSummary());
+	}
+	
+	public static void jockeyReport() {
+		System.out.println(events.getJockeySummary());
 	}
 }
