@@ -14,7 +14,7 @@ public class Driver {
 	static BufferedReader input = new BufferedReader (new InputStreamReader(System.in));
 	
 	static int numServers, balkThreshold, jockeyDestThreshold, jockeyOriginThreshold;
-	static float renegeChance, totalTime, renegeThreshold;
+	static float renegeChance, balkChance, totalTime, renegeThreshold;
 	static String inputStr, inputVal;
 	
 	static Server server1 = new Server();
@@ -34,6 +34,7 @@ public class Driver {
 		// Event Threshold -- STATIC FOR TESTING
 		renegeChance = 0.75f; 
 		renegeThreshold = 5.0f;
+		balkChance = 0.75f;
 		balkThreshold = 5; 
 		jockeyOriginThreshold = 2;
 		jockeyDestThreshold = 1;
@@ -215,7 +216,7 @@ public class Driver {
 		inputVal = input.readLine();
 		
 		if (numServers == 1) {
-			if ((server1.getSize() > balkThreshold) && (rng.nextInt(2) == 1)) { // Balk calculation
+			if ((server1.getSize() > balkThreshold) && (giveRandomChance() > 0.75f)) { // Balk calculation
 				// Log balk
 				System.out.println("Customer " + inputStr + " has balked with " + inputVal + " items.\n");
 				events.addBalkEvent(new Customer(inputStr, Integer.parseInt(inputVal), totalTime), totalTime);
@@ -233,7 +234,7 @@ public class Driver {
 		// If there are two servers
 		else {
 			if (server1.getSize() <= server2.getSize()) { // Add to server 1 if line size is <= line 2
-				if ((server1.getSize() > balkThreshold) && (rng.nextInt(2) == 1)) { // Balk calculation
+				if ((server1.getSize() > balkThreshold) && (giveRandomChance() > 0.75f)) { // Balk calculation
 					// Log balk
 					System.out.println("Customer " + inputStr + " has balked with " + inputVal + " items.\n");
 					events.addBalkEvent(new Customer(inputStr, Integer.parseInt(inputVal), totalTime), totalTime);
@@ -248,7 +249,7 @@ public class Driver {
 				}
 			} // End Server 1 Conditional
 			else { // Add to server 2
-				if ((server2.getSize() > balkThreshold) && (rng.nextInt(2) == 1)) { // Balk calculation
+				if ((server2.getSize() > balkThreshold) && (giveRandomChance() > 0.75f)) { // Balk calculation
 					// Log balk
 					System.out.println("Customer " + inputStr + " has balked with " + inputVal + " items.\n");
 					events.addBalkEvent(new Customer(inputStr, Integer.parseInt(inputVal), totalTime), totalTime);
@@ -410,7 +411,7 @@ public class Driver {
 			// CHECK FOR BALK
 			while(server2.peek() != null) {
 				temp = server2.dequeue();
-				if ((server1.getSize() > balkThreshold) && (rng.nextInt(2) == 1)) {
+				if ((server1.getSize() > balkThreshold) && (giveRandomChance() > 0.75f)) {
 					// Balk
 					System.out.println("Customer " + temp.getName() + " has balked with " + temp.getItems() + " items at " + totalTime);
 					events.addBalkEvent(temp, totalTime);
