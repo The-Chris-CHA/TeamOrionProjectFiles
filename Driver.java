@@ -155,7 +155,7 @@ public class Driver {
 	public static float giveRandomTimeLong() {
 		// Should output something between 1.0 - 2.5.
 		// To be replaced with in-house code.
-		return (rng.nextInt(2) + prng.nextFloat());
+		return (1.0f + (2.5f - 1.0f)*prng.nextFloat());
 	}
 	
 	public static float giveRandomTimeShort() {
