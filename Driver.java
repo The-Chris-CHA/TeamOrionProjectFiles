@@ -13,7 +13,7 @@ public class Driver {
 	// Declare all essentials
 	static BufferedReader input = new BufferedReader (new InputStreamReader(System.in));
 	
-	static int numServers, balkThreshold;
+	static int numServers, balkThreshold, jockeyDestThreshold, jockeyOriginThreshold;
 	static float renegeChance, totalTime, renegeThreshold;
 	static String inputStr, inputVal;
 	
@@ -31,9 +31,13 @@ public class Driver {
 		totalTime = 0.0f; // This will be one of the most important vars
 		numServers = 1;
 		
-		renegeChance = 0.75f; // Static chance for testing.
+		// Event Threshold -- STATIC FOR TESTING
+		renegeChance = 0.75f; 
 		renegeThreshold = 5.0f;
-		balkThreshold = 5; // Static chance for testing.
+		balkThreshold = 5; 
+		jockeyOriginThreshold = 2;
+		jockeyDestThreshold = 1;
+		
 		
 		// Bootup Message
 		System.out.println("Welcome to the SSM Queue and Server System!"
@@ -264,13 +268,13 @@ public class Driver {
 				temp = server1.dequeue();
 				
 				// Jockey Conditional
-				if (numServers == 2 && server2.getSize() == 0 && server1.getSize() != 0) {
+				if (numServers == 2 && server2.getSize() <= jockeyDestThreshold && server1.getSize() >= jockeyOriginThreshold) {
 					// Jockey if server2 has noone in line and there's other people in your line.
 					server2.enqueue(temp);
 					
 					// Log Jockey
 					events.addJockeyEvent(temp, totalTime); // Assuming jockey is near instant
-					System.out.println(temp.getName() + "jockeyed over to server 1 at " + totalTime);
+					System.out.println(temp.getName() + "jockeyed over to server 2 at " + totalTime);
 				}
 				else {
 					// Time calculation
@@ -298,7 +302,7 @@ public class Driver {
 				temp = server2.dequeue();
 				
 				// Jockey Conditional
-				if (numServers == 2 && server1.getSize() == 0 && server2.getSize() != 0) {
+				if (numServers == 2 && server1.getSize() <= jockeyDestThreshold && server2.getSize() >= jockeyOriginThreshold) {
 					// Jockey if server2 has noone in line and there's other people in your line.
 					server1.enqueue(temp);
 					
@@ -330,17 +334,68 @@ public class Driver {
 	
 	public static void processTwoCustomers() {
 		Customer temp1, temp2;
+		float server1Start, server1End, server2Start, server2End;
+		
+		server1End = 0;
+		server2End = 0;
 		
 		
+		// Server 1 handles first
+		temp1 = server1.dequeue();
+		
+		if (numServers == 2 && server2.getSize() <= jockeyDestThreshold && server1.getSize() >= jockeyOriginThreshold) {
+			// Jockey
+			server2.enqueue(temp1);
+			
+			// Log Jockey
+			events.addJockeyEvent(temp1, totalTime); // Assuming jockey is near instant
+			System.out.println(temp1.getName() + "jockeyed over to server 2 at " + totalTime);
+		}
+		else {
+			server1Start = totalTime;
+			server1End = (server1Start + (giveRandomTimeShort() + ((giveRandomTimeShort()/2) * temp1.getItems()) + giveRandomTimeLong()));
+			
+			// Log Event/Process
+			System.out.println("Aisle 1: " + temp1.getName() + " began checking-out at " + server1Start + " and finished checking-out at " + server1End + ". | This took " + (server1End-server1Start) +" minutes.\n");
+			events.addProcessEvent(1, temp1, server1Start, server1End);
+		} // End of Server 1 Process
+		
+		// Server 2 Handling
+		temp2 = server2.dequeue();
+		if (numServers == 2 && server1.getSize() <= jockeyDestThreshold && server2.getSize() >= jockeyOriginThreshold) {
+			// Jockey
+			server1.enqueue(temp2);
+			
+			events.addJockeyEvent(temp2, totalTime); // Assuming jockey is near instant
+			System.out.println(temp2.getName() + "jockeyed over to server 1 at " + totalTime);
+		}
+		else {
+			server2Start = totalTime;
+			server2End = (server2Start + (giveRandomTimeShort() + ((giveRandomTimeShort()/2) * temp2.getItems()) + giveRandomTimeLong()));
+			
+			// Log Event/Process
+			System.out.println("Aisle 2: " + temp2.getName() + " began checking-out at " + server2Start + " and finished checking-out at " + server2End + ". | This took " + (server2End-server2Start) +" minutes.\n");
+			events.addProcessEvent(1, temp1, server2Start, server2End);
+		}
+		
+		// Figure out which event took longer so we know how much time elapsed.
+		if (server1End > server2End)	
+			totalTime = server1End;
+		else	
+			totalTime = server2End;
+		
+		// Finally check for reneges.
+		checkRenege(1);
+		checkRenege(2);
 	}
 	
 	public static void openServer2() {
 		if (numServers == 2) {
-			System.out.println("Second aisle is already opened!");
+			System.out.println("Second aisle is already opened!\n");
 		}
 		else {
 			numServers += 1; // SHOULD equal 2. 
-			System.out.println("Aisle 2 has been opened!");
+			System.out.println("Aisle 2 has been opened!\n");
 		}
 	}
 	
