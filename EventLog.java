@@ -8,10 +8,17 @@
 public class EventLog {
 	Customer customerID;
 	float timeOfEvent;
+	int numCustomers;
 	
 	public EventLog(Customer customerID, float timeOfEvent) {
 		this.customerID = customerID;
 		this.timeOfEvent = (timeOfEvent);
+	}
+	
+	//Secondary constructor, only for use with queue tracking
+	public EventLog(int numCustomers, float timeOfEvent) {
+		this.numCustomers = numCustomers;
+		this.timeOfEvent = timeOfEvent;
 	}
 	
 	public Customer getCustomer() {
@@ -20,5 +27,9 @@ public class EventLog {
 	
 	public float getTimeOfEvent() {
 		return timeOfEvent;
+	}
+	
+	public int getNumCustomers() {
+		return numCustomers;
 	}
 }

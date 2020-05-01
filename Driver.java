@@ -6,6 +6,7 @@
  */
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Driver {
@@ -23,7 +24,7 @@ public class Driver {
 	static EventLogArchive events = new EventLogArchive();
 	
 	static Random rng = new Random(); // To Be Removed
-	static PseudoRNG prng = new PseudoRNG(1500);
+	static PseudoRNG prng = new PseudoRNG();
 	
 	// Begin Subprograms
 	public static void main(String[] args) throws IOException {
@@ -97,17 +98,20 @@ public class Driver {
 				
 			case "5":
 				// Code for finding q-hat
-				System.out.println("The q-hat of this server model is : " + getQHat());
+				getQHat1();
+				getQHat2();
 				break;
 				
 			case "6": 
 				// Code for finding u-hat
-				System.out.println("The u-hat of this server model is : " + getUHat());
+				float uhat = getBT();
+				System.out.println("The u-hat of this server model is : " + uhat);
 				break;
 				
 			case "7":
 				// Code for finding b(t)
-				System.out.println("The B(t) for this server model is : " + getBT());
+				float bt = getBT();
+				System.out.println("The B(t) for this server model is : " + bt);
 				break;
 				
 			case "8":
@@ -230,6 +234,8 @@ public class Driver {
 				// Customer enters queue despite being greater than threshold. 50/50 chance.
 				if (server1.getSize() == 0) {
 					totalTime += giveRandomTimeLong(); // Simulating the fact that time passes between batches of customers
+					
+					events.addBusyEvent(totalTime); //Queue going from empty to 'busy'
 				}
 				server1.enqueue(new Customer(inputStr, Integer.parseInt(inputVal), totalTime));
 				System.out.println(inputStr + " got in line 1 for checkout at " + totalTime + " with " + inputVal + " items.\n");
@@ -248,9 +254,13 @@ public class Driver {
 					// Customer enters queue despite being greater than threshold. 50/50 chance.
 					if (server1.getSize() == 0) {
 						totalTime += giveRandomTimeLong(); // Simulating the fact that time passes between batches of customers
+						
+						events.addBusyEvent(totalTime); //Queue going from empty to "busy"
 					}
 					server1.enqueue(new Customer(inputStr, Integer.parseInt(inputVal), totalTime));
 					System.out.println(inputStr + " got in line 1 for checkout at " + totalTime + " with " + inputVal + " items.\n");
+				
+					
 				}
 			} // End Server 1 Conditional
 			else { // Add to server 2
@@ -266,6 +276,9 @@ public class Driver {
 				}
 			} // End Server 2 Conditional
 		}
+		
+		events.trackQueue1(server1.getSize(), totalTime);//Log the current state of server1 and server 2 after customer creation
+		events.trackQueue2(server2.getSize(), totalTime);
 	} // End createCustomer
 	
 	// Case 2
@@ -296,6 +309,7 @@ public class Driver {
 					events.addProcessEvent(1, temp, startTime, endTime);
 					
 					checkRenege(1);
+					
 				}
 				
 			}
@@ -338,6 +352,16 @@ public class Driver {
 						+ "If you're reading this, this is an error.");
 			}
 		}
+		
+		
+		//Empty queue check for B(t)
+		if(server1.getSize() == 0 && server2.getSize() == 0)
+		{
+			events.addBusyEvent(totalTime);
+		}
+		
+		events.trackQueue1(server1.getSize(), totalTime);//Log the state of server1 and server 2 after processSingleCustomer\
+		events.trackQueue2(server2.getSize(), totalTime);
 	}
 	
 	// Case 2
@@ -396,6 +420,15 @@ public class Driver {
 		// Finally check for reneges.
 		checkRenege(1);
 		checkRenege(2);
+		
+		
+		//Empty queue check
+		if(server1.getSize() == 0 && server2.getSize() == 0)
+		{
+			events.addBusyEvent(totalTime);
+		}
+		events.trackQueue1(server1.getSize(), totalTime);//Log the state of server1 and server2 after processTwoCustomers
+		events.trackQueue2(server2.getSize(), totalTime);
 	}
 	
 	// Case 3
@@ -438,24 +471,154 @@ public class Driver {
 	}
 	
 	// Case 5
-	public static float getQHat() {
+	public static void getQHat1() {
+		//1*(time of one customer in queue) + 2*(time of two in queue) + etc...
+		
+		ArrayList<EventLog> queueTrack = events.getQueue1Track();
 		
 		
-		return 0.0f;
+		if(queueTrack.size() == 0)
+		{
+			System.out.println("The server hasn't been used!");
+		}
+		else
+		{
+			float qhat = 0;
+			int size = server1.getSize();
+			float startingTime = 0;
+			
+			for(int i = 0; i < size; i++)
+			{
+				EventLog curr = queueTrack.get(i);
+				
+				if(queueTrack.get(i+1) != null) //NOT the final pass yet
+				{
+					EventLog next = queueTrack.get(i+1);
+					startingTime = curr.getTimeOfEvent();
+					
+					if(curr.getNumCustomers() == next.getNumCustomers())
+					{
+						//no change in queue length
+						//do nothing
+					}
+					else
+					{
+						//do qhat calculation for that chunk of time with x customers
+						qhat += curr.getNumCustomers()*(next.getTimeOfEvent() - startingTime);
+						//reset starting point to new time
+						startingTime = next.getTimeOfEvent();
+					}
+				}
+				else //Last pass (i == size - 1)
+				{
+					qhat += curr.getNumCustomers()*(totalTime - startingTime);
+				}
+				
+			}
+			
+			
+			
+			System.out.println("The q-hat of Aisle 1 is : " + qhat + ".");
+			
+		}
+		
 	}
 	
-	// Case 6
-	public static float getUHat() {
+	// Case 5
+	public static void getQHat2() {
+	//1*(time of one customer in queue) + 2*(time of two in queue) + etc...
 		
+		ArrayList<EventLog> queueTrack = events.getQueue2Track();
+			
 		
-		return 0.0f;
+		if(queueTrack.size() == 0)
+		{
+			System.out.println("The server hasn't been used!");
+		}
+		else
+		{
+			float qhat = 0;
+			int size = server2.getSize();
+			float startingTime = 0;
+			
+			for(int i = 0; i < size; i++)
+			{
+				EventLog curr = queueTrack.get(i);
+				
+				if(queueTrack.get(i+1) != null) //NOT the final pass yet
+				{
+					EventLog next = queueTrack.get(i+1);
+					startingTime = curr.getTimeOfEvent();
+				
+					if(curr.getNumCustomers() == next.getNumCustomers())
+					{
+						//no change in queue length
+						//do nothing
+					}
+					else
+					{
+						//do qhat calculation for that chunk of time with x customers
+						qhat += curr.getNumCustomers()*(next.getTimeOfEvent() - startingTime);
+						//reset starting point to new time
+						startingTime = next.getTimeOfEvent();
+					}
+				}
+				else //Last pass (i == size - 1)
+				{
+					qhat += curr.getNumCustomers()*(totalTime - startingTime);
+				}
+					
+			}
+				
+				
+				
+			System.out.println("The q-hat of Aisle 2 is : " + qhat + ".");
+				
+		}
+			
 	}
+	
+	// Case 6 == UNNECESSARY METHOD, getBT() returns the same result mathematically
+	/*public static float getUHat() {
+		//Essentially B(t)
+		//integral(B(t)/T(n) dt) == B(t)
+		
+		return (getBT());
+	}*/
 	
 	// Case 7
 	public static float getBT() {
+		//Total time of customers in queue / Total time of queue running
+		ArrayList<Float> busyTrack = events.getBusyTrack();
 		
-		
-		return 0.0f;
+		if(busyTrack.size() == 0)
+		{
+			//no customers ever entered queue
+			System.out.println("The server has not been used!");
+			return 0.0f;
+		}
+		else
+		{
+			int i = 0;
+			float totalBusyTime = 0;
+			int size = busyTrack.size();
+				
+			//calculate all busy times, sum them
+			while(i < size)
+			{
+				totalBusyTime += busyTrack.get(i+1) - busyTrack.get(i);
+				i += 2; //i should only be even values
+			}
+			
+			if(size%2 != 0) //account for odd # of events (queue not empty at time of execution)
+			{
+				totalBusyTime += totalTime - busyTrack.get(size - 1);
+			}
+			
+			
+			return totalBusyTime / totalTime;
+			
+		}
 	}
 	
 	

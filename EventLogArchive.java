@@ -15,6 +15,9 @@ public class EventLogArchive {
 	ArrayList<EventLog> renegeList;
 	ArrayList<EventLog> jockeyList;
 	ArrayList<ProcessLog> processList;
+	ArrayList<Float> busyTrack;
+	ArrayList<EventLog> queue1Track;
+	ArrayList<EventLog> queue2Track;
 	
 	public EventLogArchive() {
 		// Init all Lists
@@ -22,6 +25,9 @@ public class EventLogArchive {
 		renegeList = new ArrayList<EventLog>();
 		jockeyList = new ArrayList<EventLog>();
 		processList = new ArrayList<ProcessLog>();
+		busyTrack = new ArrayList<Float>();
+		queue1Track = new ArrayList<EventLog>();
+		queue2Track = new ArrayList<EventLog>();
 	}
 	
 	public void addBalkEvent(Customer input, float timeOfBalk) {
@@ -38,6 +44,18 @@ public class EventLogArchive {
 	
 	public void addProcessEvent(int server, Customer input, float startTime, float endTime) {
 		processList.add(new ProcessLog(server, input, startTime, endTime));
+	}
+	
+	public void addBusyEvent(float time) {
+		busyTrack.add(time);
+	}
+	
+	public void trackQueue1(int customers, float time) {
+		queue1Track.add(new EventLog(customers, time));
+	}
+	
+	public void trackQueue2(int customers, float time) {
+		queue2Track.add(new EventLog(customers, time));
 	}
 	
 	public String getBalkSummary() {
@@ -76,5 +94,36 @@ public class EventLogArchive {
 		return output;
 	}
 	
+	public ArrayList<Float> getBusyTrack() {
+		if(busyTrack.size() >= 1)
+		{
+			return busyTrack;
+		}
+		else
+		{
+			return new ArrayList<Float>();
+		}
+	}
 	
+	public ArrayList<EventLog> getQueue1Track() {
+		if(queue1Track.size() == 0)
+		{
+			return new ArrayList<EventLog>();
+		}
+		else
+		{
+			return queue1Track;
+		}
+	}
+	
+	public ArrayList<EventLog> getQueue2Track() {
+		if(queue2Track.size() == 0)
+		{
+			return new ArrayList<EventLog>();
+		}
+		else
+		{
+			return queue2Track;
+		}
+	}
 }
