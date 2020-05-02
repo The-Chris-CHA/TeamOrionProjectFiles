@@ -57,9 +57,9 @@ public class Driver {
 		System.out.println("5. Find q-hat");
 		System.out.println("6. Find u-hat");
 		System.out.println("7. Find B(t)");
-		System.out.println("8. Report on balking [customers/items]");
-		System.out.println("9. Report on reneging [customers/items]");
-		System.out.println("10. Report on jockeying [customers/items]");
+		System.out.println("8. Report on balking customers");
+		System.out.println("9. Report on reneging customers");
+		System.out.println("10. Report on jockeying customers");
 		System.out.println("11. Quit\n");
 		
 		//Take user input
@@ -371,7 +371,6 @@ public class Driver {
 		
 		server1End = 0;
 		server2End = 0;
-		
 		
 		// Server 1 handles first
 		temp1 = server1.dequeue();
