@@ -36,7 +36,7 @@ public class Driver {
 		// Event Threshold -- STATIC FOR TESTING
 		renegeChance = 0.75f; 
 		renegeThreshold = 5.0f;
-		balkChance = 0.75f;
+		balkChance = 0.25f;
 		balkThreshold = 5; 
 		jockeyOriginThreshold = 2;
 		jockeyDestThreshold = 1;
@@ -225,7 +225,7 @@ public class Driver {
 		inputVal = input.readLine();
 		
 		if (numServers == 1) {
-			if ((server1.getSize() > balkThreshold) && (giveRandomChance() > 0.75f)) { // Balk calculation
+			if ((server1.getSize() > balkThreshold) && (giveRandomChance() < balkChance)) { // Balk calculation
 				// Log balk
 				System.out.println("Customer " + inputStr + " has balked with " + inputVal + " items.\n");
 				events.addBalkEvent(new Customer(inputStr, Integer.parseInt(inputVal), totalTime), totalTime);
@@ -245,7 +245,7 @@ public class Driver {
 		// If there are two servers
 		else {
 			if (server1.getSize() <= server2.getSize()) { // Add to server 1 if line size is <= line 2
-				if ((server1.getSize() > balkThreshold) && (giveRandomChance() > 0.75f)) { // Balk calculation
+				if ((server1.getSize() > balkThreshold) && (giveRandomChance() < balkChance)) { // Balk calculation
 					// Log balk
 					System.out.println("Customer " + inputStr + " has balked with " + inputVal + " items.\n");
 					events.addBalkEvent(new Customer(inputStr, Integer.parseInt(inputVal), totalTime), totalTime);
@@ -264,7 +264,7 @@ public class Driver {
 				}
 			} // End Server 1 Conditional
 			else { // Add to server 2
-				if ((server2.getSize() > balkThreshold) && (giveRandomChance() > 0.75f)) { // Balk calculation
+				if ((server2.getSize() > balkThreshold) && (giveRandomChance() < balkChance)) { // Balk calculation
 					// Log balk
 					System.out.println("Customer " + inputStr + " has balked with " + inputVal + " items.\n");
 					events.addBalkEvent(new Customer(inputStr, Integer.parseInt(inputVal), totalTime), totalTime);
@@ -576,14 +576,6 @@ public class Driver {
 		}
 			
 	}
-	
-	// Case 6 == UNNECESSARY METHOD, getBT() returns the same result mathematically
-	/*public static float getUHat() {
-		//Essentially B(t)
-		//integral(B(t)/T(n) dt) == B(t)
-		
-		return (getBT());
-	}*/
 	
 	// Case 7
 	public static float getBT() {
