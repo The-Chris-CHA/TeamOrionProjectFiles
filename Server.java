@@ -1,7 +1,7 @@
-/* Driver.java
+/* Server.java
  * Description: Server class for ISSM project.
  * Status: Incomplete
- * Version: 2020.4.30-1
+ * Version: 2020.4.30-2
  * Authors: Christopher Herras-Antig
  */
 

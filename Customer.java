@@ -1,7 +1,7 @@
 /* Customer.java
  * Description: Customer Class for ISSM project
  * Status: Incomplete
- * Version: 2020.4.30-1
+ * Version: 2020.4.30-3
  * Authors: Christopher Herras-Antig, Dylan Ott
  */
 

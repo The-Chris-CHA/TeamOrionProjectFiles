@@ -1,7 +1,7 @@
 /* EventLogList.java
  * Description: List of event logs for ISSM Project
  * Status: Incomplete
- * Version: 2020.4.30-1
+ * Version: 2020.5.01-1
  * Authors: Christopher Herras-Antig
  */
 

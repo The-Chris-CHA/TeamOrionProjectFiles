@@ -1,3 +1,9 @@
+/* EventLogList.java
+ * Description: List of event logs for ISSM Project
+ * Status: Incomplete
+ * Version: 2020.5.01-2
+ * Authors: Christopher Herras-Antig
+ */
 
 public class ProcessLog {
 
