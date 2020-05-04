@@ -7,7 +7,7 @@
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Random;
+//import java.util.Random; -- imported for ease of testing early on
 
 public class Driver {
 	
@@ -23,7 +23,7 @@ public class Driver {
 	
 	static EventLogArchive events = new EventLogArchive();
 	
-	static Random rng = new Random(); // To Be Removed
+	//static Random rng = new Random(); // To Be Removed
 	static PseudoRNG prng = new PseudoRNG();
 	
 	// Begin Subprograms
