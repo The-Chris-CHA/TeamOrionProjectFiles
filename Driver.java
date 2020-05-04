@@ -482,14 +482,14 @@ public class Driver {
 		else
 		{
 			float qhat = 0;
-			int size = server1.getSize();
+			int size = queueTrack.size();
 			float startingTime = 0;
 			
 			for(int i = 0; i < size; i++)
 			{
 				EventLog curr = queueTrack.get(i);
 				
-				if(queueTrack.get(i+1) != null) //NOT the final pass yet
+				if(i != (size - 1)) //NOT the final pass yet
 				{
 					EventLog next = queueTrack.get(i+1);
 					startingTime = curr.getTimeOfEvent();
@@ -524,11 +524,11 @@ public class Driver {
 	
 	// Case 5
 	public static void getQHat2() {
-	//1*(time of one customer in queue) + 2*(time of two in queue) + etc...
+		//1*(time of one customer in queue) + 2*(time of two in queue) + etc...
 		
 		ArrayList<EventLog> queueTrack = events.getQueue2Track();
-			
-		
+				
+				
 		if(queueTrack.size() == 0)
 		{
 			System.out.println("The server hasn't been used!");
@@ -536,18 +536,18 @@ public class Driver {
 		else
 		{
 			float qhat = 0;
-			int size = server2.getSize();
+			int size = queueTrack.size();
 			float startingTime = 0;
-			
+					
 			for(int i = 0; i < size; i++)
 			{
 				EventLog curr = queueTrack.get(i);
 				
-				if(queueTrack.get(i+1) != null) //NOT the final pass yet
+				if(i != (size - 1)) //NOT the final pass yet
 				{
 					EventLog next = queueTrack.get(i+1);
 					startingTime = curr.getTimeOfEvent();
-				
+							
 					if(curr.getNumCustomers() == next.getNumCustomers())
 					{
 						//no change in queue length
@@ -565,15 +565,15 @@ public class Driver {
 				{
 					qhat += curr.getNumCustomers()*(totalTime - startingTime);
 				}
-					
+				
 			}
-				
-				
-				
+					
+					
+					
 			System.out.println("The q-hat of Aisle 2 is : " + qhat + ".");
-				
+					
 		}
-			
+				
 	}
 	
 	// Case 7
