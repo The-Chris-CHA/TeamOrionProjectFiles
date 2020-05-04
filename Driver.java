@@ -7,7 +7,6 @@
 
 import java.io.*;
 import java.util.ArrayList;
-//import java.util.Random; -- imported for ease of testing early on
 
 public class Driver {
 	
@@ -33,7 +32,7 @@ public class Driver {
 		totalTime = 0.0f; // This will be one of the most important vars
 		numServers = 1;
 		
-		// Event Threshold -- STATIC FOR TESTING
+		// Event Threshold -- Change to observation from STAPLES -- Check Discord
 		renegeChance = 0.75f; 
 		renegeThreshold = 5.0f;
 		balkChance = 0.25f;
